@@ -6,6 +6,7 @@ import com.example.favartists.service.model.ItunesAlbumResponse;
 import com.example.favartists.service.model.ItunesArtistResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -23,6 +24,9 @@ public class ItunesService {
     private final ConcurrentHashMap<String, List<Artist>> artistsCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, List<Album>> albumsCache = new ConcurrentHashMap<>();
 
+    @Value("${itunes.artists.url}") String artistsUrl;
+    @Value("${itunes.albums.url}") String albumsUrl;
+
     private final HttpClient httpClient = HttpClient.newBuilder().build();
 
     @SneakyThrows
@@ -31,7 +35,7 @@ public class ItunesService {
         if (result != null) {
             return result;
         }
-        HttpRequest searchRequest = HttpRequest.newBuilder(URI.create("https://itunes.apple.com/search?entity=allArtist&term=".concat(term))).GET().build();
+        HttpRequest searchRequest = HttpRequest.newBuilder(URI.create(artistsUrl.formatted(term))).GET().build();
         try (InputStream body = httpClient.send(searchRequest, HttpResponse.BodyHandlers.ofInputStream()).body()) {
             result = new ObjectMapper().readValue(body, ItunesArtistResponse.class)
                     .getResults()
@@ -53,7 +57,7 @@ public class ItunesService {
         if (result != null) {
             return result;
         }
-        HttpRequest searchRequest = HttpRequest.newBuilder(URI.create("https://itunes.apple.com/lookup?amgArtistId=%s&entity=album&limit=5".formatted(artistId.toString()))).GET().build();
+        HttpRequest searchRequest = HttpRequest.newBuilder(URI.create(albumsUrl.formatted(artistId.toString()))).GET().build();
         try (InputStream body = httpClient.send(searchRequest, HttpResponse.BodyHandlers.ofInputStream()).body()) {
             result = new ObjectMapper().readValue(body, ItunesAlbumResponse.class)
                     .getResults()
