@@ -2,10 +2,6 @@ package com.example.favartists.api;
 
 import com.example.favartists.model.Artist;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,13 +14,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(
@@ -33,19 +22,6 @@ class FavArtistsControllerTest {
     @LocalServerPort
     private int port;
     private final HttpClient httpClient = HttpClient.newBuilder().build();
-    private WireMockServer wireMockServer;
-
-    @BeforeEach
-    void setUp() {
-        wireMockServer = new WireMockServer(wireMockConfig().port(12365));
-        wireMockServer.start();
-        configureFor("localhost", wireMockServer.port());
-    }
-
-    @AfterEach
-    void tearDown() {
-        wireMockServer.stop();
-    }
 
     @Test
     void saveArtist() throws IOException, InterruptedException {

@@ -4,7 +4,6 @@ import com.example.favartists.model.Album;
 import com.example.favartists.model.Artist;
 import com.example.favartists.repository.ArtistRepository;
 import com.example.favartists.service.ItunesService;
-import lombok.AllArgsConstructor;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +42,7 @@ public class FavArtistsController {
     public List<Artist> searchArtists(@RequestParam("term") String term) {
         return itunesService.searchArtists(term);
     }
+
     @GetMapping("/{artistId}/albums")
     public List<Album> getArtistAlbums(@PathVariable("artistId") Integer artistId) {
         return itunesService.searchAlbums(artistId);
